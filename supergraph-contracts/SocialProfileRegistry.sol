@@ -48,7 +48,7 @@
 //         string memory socialMedia,
 //         string memory otp
 //     ) public onlyGuardian {
-//         bytes32 hash = keccak256(abi.encodePacked(otp, socialMedia));
+//         bytes32 hash = keccak256(abi.encodePacked(otp));
 //         verificationRequests[socialMedia] = hash;
 //         emit VerificationRequested(pshandle, socialMedia, hash);
 //     }
@@ -59,9 +59,9 @@
 //         string memory socialMedia,
 //         string memory otp,
 //         string memory socialMediaHandle
-//     ) public {
-//         bytes32 expectedHash = keccak256(abi.encodePacked(otp, socialMedia));
-//         require(verificationRequests[socialMedia] == expectedHash, "Invalid verification");
+//     ) public onlyGuardian {
+//         bytes32 hash = keccak256(abi.encodePacked(otp));
+//         require(hash == verificationRequests[socialMedia], "Invalid secret.");
 
 //         UserProfile storage profile = profilesByPshandle[pshandle];
 //         if (keccak256(bytes(socialMedia)) == keccak256(bytes("twitter"))) {
