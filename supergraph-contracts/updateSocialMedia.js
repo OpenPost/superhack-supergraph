@@ -3,8 +3,8 @@ require('dotenv').config()
 
 // Set up your environment variables or replace these with your actual values
 const providerUrl = "https://rpc-social-network-sqbzjhcjed.t.conduit.xyz";
-const privateKey =  process.env.PRIVATE_KEY;
-const contractAddress = "0x40087cdaB0792F5B5C39bfb3e71E0b6E80e674A6"; // Replace with the deployed contract address
+const privateKey = process.env.PRIVATE_KEY;
+const contractAddress = "0x0Ed393BA7E62dFe710afC7837383eC3166861CcE"; // Replace with the deployed contract address
 
 // Contract ABI
 const contractAbi = [
@@ -23,8 +23,21 @@ const contract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 // Function to hash a string
 function hashString(input) {
-    return ethers.utils.keccak256(ethers.utils.toUtf8Bytes(input));
+
+    // import contract 
+
+    //Sets the hash which is resolved by the secert
+    const hash = ethers.keccak256(ethers.toUtf8Bytes(input));
+    //Determine who is the atomic swap recipient
+    console.log(hash);
+
+    return hash;
+
+
 }
+
+
+
 
 // Function to set user profile
 async function setUserProfile(pshandle, twitter, instagram, facebook, medium, threads, farcaster, mastodon) {
@@ -41,8 +54,9 @@ async function setUserProfile(pshandle, twitter, instagram, facebook, medium, th
 // Function to request verification
 async function requestVerification(pshandle, socialMedia, otp) {
     try {
-        console.log(`Requesting verification for ${pshandle} on ${socialMedia} with OTP: ${otp}`);
-        const tx = await contract.requestVerification(pshandle, socialMedia, otp);
+        let newOtp = hashString(otp)
+        console.log(`Requesting verification for ${pshandle} on ${socialMedia} with OTP: ${newOtp}`);
+        const tx = await contract.requestVerification(pshandle, socialMedia, newOtp);
         await tx.wait();
         console.log(`Verification requested. Transaction Hash: ${tx.hash}`);
     } catch (error) {
@@ -53,8 +67,9 @@ async function requestVerification(pshandle, socialMedia, otp) {
 // Function to complete verification
 async function completeVerification(pshandle, socialMedia, otp, newSocialMediaHandle) {
     try {
+        let newOtp = hashString(otp)
         console.log(`Completing verification for ${pshandle} on ${socialMedia} with handle: ${newSocialMediaHandle}`);
-        const tx = await contract.completeVerification(pshandle, socialMedia, otp, newSocialMediaHandle);
+        const tx = await contract.completeVerification(pshandle, socialMedia, newOtp, newSocialMediaHandle);
         await tx.wait();
         console.log(`Verification completed. Updated ${socialMedia} to ${newSocialMediaHandle}. Transaction Hash: ${tx.hash}`);
     } catch (error) {
@@ -73,7 +88,7 @@ async function checkVerification(pshandle) {
 }
 
 // Example usage
-const pshandle = "saeed4";
+const pshandle = "saeed5";
 const socialMedia = "facebook";
 const otp = "unique-otp"; // Securely generate this in a real application
 const newFacebookHandle = "newFacebook3";
