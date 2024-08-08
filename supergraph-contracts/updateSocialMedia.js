@@ -92,13 +92,19 @@ const pshandle = "saeed5";
 const socialMedia = "facebook";
 const otp = "unique-otp"; // Securely generate this in a real application
 const newFacebookHandle = "newFacebook3";
-
+const attestationUID = "UID FROM EAS ! "
 // Set initial profile
-setUserProfile(pshandle, "tsaeed", "igSaeed", "fbSaeed", "mSaeed", "tSaeed", "fSaeed", "mSaeed")
+// Set initial profile
+setUserProfile(
+    pshandle, 
+    { handle: "tsaeed", attestationUID: attestationUID },
+    { handle: "igSaeed", attestationUID: attestationUID },
+    { handle: "fbSaeed", attestationUID: attestationUID },
+    { handle: "mSaeed", attestationUID: attestationUID },
+    { handle: "tSaeed", attestationUID: attestationUID },
+    { handle: "fSaeed", attestationUID: attestationUID },
+    { handle: "mSaeed", attestationUID: attestationUID }
+)
     .then(() => requestVerification(pshandle, socialMedia, otp))
-    .then(() => completeVerification(pshandle, socialMedia, otp, newFacebookHandle))
+    .then(() => completeVerification(pshandle, socialMedia, otp, newFacebookHandle, attestationUID))
     .then(() => checkVerification(pshandle));
-
-
-
-
