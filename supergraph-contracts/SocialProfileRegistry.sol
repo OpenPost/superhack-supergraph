@@ -8,6 +8,7 @@ contract SocialProfileRegistry {
     }
 
     struct UserProfile {
+
         string pshandle;
         SocialMedia twitter;
         SocialMedia instagram;
@@ -16,6 +17,9 @@ contract SocialProfileRegistry {
         SocialMedia threads;
         SocialMedia farcaster;
         SocialMedia mastodon;
+        // address account;
+        // string[] freinds;
+        // string[] trustedBy (length * freinds of freind);
     }
 
     // Mapping from .PS handle to user profile
@@ -37,7 +41,11 @@ contract SocialProfileRegistry {
     }
 
     // Event emitted when a verification request is created
-    event VerificationRequested(string indexed pshandle, string socialMedia, bytes32 hash);
+    event VerificationRequested(
+        string indexed pshandle,
+        string socialMedia,
+        bytes32 hash
+    );
 
     // Event emitted when a profile is updated
     event ProfileUpdated(string indexed pshandle);
@@ -77,17 +85,29 @@ contract SocialProfileRegistry {
 
         if (keccak256(bytes(socialMedia)) == keccak256(bytes("twitter"))) {
             profile.twitter = newSocialMedia;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("instagram"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("instagram"))
+        ) {
             profile.instagram = newSocialMedia;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("facebook"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("facebook"))
+        ) {
             profile.facebook = newSocialMedia;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("medium"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("medium"))
+        ) {
             profile.medium = newSocialMedia;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("threads"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("threads"))
+        ) {
             profile.threads = newSocialMedia;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("farcaster"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("farcaster"))
+        ) {
             profile.farcaster = newSocialMedia;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("mastodon"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("mastodon"))
+        ) {
             profile.mastodon = newSocialMedia;
         }
 
@@ -119,39 +139,63 @@ contract SocialProfileRegistry {
         );
 
         // Update reverse lookup table
-        if (bytes(twitter.handle).length > 0) socialMediaToPshandle[twitter.handle] = pshandle;
-        if (bytes(instagram.handle).length > 0) socialMediaToPshandle[instagram.handle] = pshandle;
-        if (bytes(facebook.handle).length > 0) socialMediaToPshandle[facebook.handle] = pshandle;
-        if (bytes(medium.handle).length > 0) socialMediaToPshandle[medium.handle] = pshandle;
-        if (bytes(threads.handle).length > 0) socialMediaToPshandle[threads.handle] = pshandle;
-        if (bytes(farcaster.handle).length > 0) socialMediaToPshandle[farcaster.handle] = pshandle;
-        if (bytes(mastodon.handle).length > 0) socialMediaToPshandle[mastodon.handle] = pshandle;
-        
+        if (bytes(twitter.handle).length > 0)
+            socialMediaToPshandle[twitter.handle] = pshandle;
+        if (bytes(instagram.handle).length > 0)
+            socialMediaToPshandle[instagram.handle] = pshandle;
+        if (bytes(facebook.handle).length > 0)
+            socialMediaToPshandle[facebook.handle] = pshandle;
+        if (bytes(medium.handle).length > 0)
+            socialMediaToPshandle[medium.handle] = pshandle;
+        if (bytes(threads.handle).length > 0)
+            socialMediaToPshandle[threads.handle] = pshandle;
+        if (bytes(farcaster.handle).length > 0)
+            socialMediaToPshandle[farcaster.handle] = pshandle;
+        if (bytes(mastodon.handle).length > 0)
+            socialMediaToPshandle[mastodon.handle] = pshandle;
+
         emit ProfileUpdated(pshandle);
     }
 
     // Function to retrieve a profile by .PS handle
-    function getProfileByPshandle(string memory pshandle) public view returns (UserProfile memory) {
+    function getProfileByPshandle(
+        string memory pshandle
+    ) public view returns (UserProfile memory) {
         return profilesByPshandle[pshandle];
     }
 
     // Function to retrieve a social media profile and its attestation by handle
-    function getSocialMedia(string memory pshandle, string memory socialMedia) public view returns (SocialMedia memory) {
+    function getSocialMedia(
+        string memory pshandle,
+        string memory socialMedia
+    ) public view returns (SocialMedia memory) {
         UserProfile storage profile = profilesByPshandle[pshandle];
-        
+
         if (keccak256(bytes(socialMedia)) == keccak256(bytes("twitter"))) {
             return profile.twitter;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("instagram"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("instagram"))
+        ) {
             return profile.instagram;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("facebook"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("facebook"))
+        ) {
             return profile.facebook;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("medium"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("medium"))
+        ) {
             return profile.medium;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("threads"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("threads"))
+        ) {
             return profile.threads;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("farcaster"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("farcaster"))
+        ) {
             return profile.farcaster;
-        } else if (keccak256(bytes(socialMedia)) == keccak256(bytes("mastodon"))) {
+        } else if (
+            keccak256(bytes(socialMedia)) == keccak256(bytes("mastodon"))
+        ) {
             return profile.mastodon;
         } else {
             revert("Invalid social media type");
@@ -159,7 +203,9 @@ contract SocialProfileRegistry {
     }
 
     // Function to retrieve a profile by any social media handle
-    function getProfileBySocialMedia(string memory socialMediaHandle) public view returns (UserProfile memory) {
+    function getProfileBySocialMedia(
+        string memory socialMediaHandle
+    ) public view returns (UserProfile memory) {
         string memory pshandle = socialMediaToPshandle[socialMediaHandle];
         require(bytes(pshandle).length > 0, "Profile not found");
         return profilesByPshandle[pshandle];
