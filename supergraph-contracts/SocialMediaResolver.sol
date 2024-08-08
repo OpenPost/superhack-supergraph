@@ -9,7 +9,7 @@ import { IEAS, Attestation } from "eas-contracts/IEAS.sol"; // Import the EAS in
  * @dev A resolver that verifies if an attestation is from a trusted guardian regarding social media verification.
  */
 contract SocialMediaResolver is SchemaResolver {
-    
+
     address private immutable guardian; // The guardian address allowed to make attestations
 
     /**
@@ -37,7 +37,7 @@ contract SocialMediaResolver is SchemaResolver {
      * @param value The Ether value sent with the transaction (not used in this example).
      * @return A boolean indicating whether the revocation is valid.
      */
-    function onRevoke(Attestation calldata /*attestation*/, uint256 /*value*/) internal pure override returns (bool) {
+    function onRevoke(Attestation calldata /*attestation*/) internal pure override returns (bool) {
         // Allow all revocations
         return true;
     }
