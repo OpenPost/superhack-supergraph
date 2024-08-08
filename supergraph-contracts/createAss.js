@@ -14,9 +14,10 @@ const eas = new EAS('0x1bF54f52c2733d1a694F6a38Cf1bBE043F84571C');
 eas.connect(signer);
 
 // Initialize SchemaEncoder with the schema string
-const schemaEncoder = new SchemaEncoder("string name4");
+const schemaEncoder = new SchemaEncoder("string socialMedia,string pshHandle");
+
 const encodedData = schemaEncoder.encodeData([
-  { name: "name4", value:"ely", type: "string" },
+  { name: "name4", value: "ely", type: "string" },
 ]);
 
 const schemaUID = "0x1ac12809313ba1aff3f4eb4e13c4814165a5d9d13b05ac252e4bb05c612227d7";
