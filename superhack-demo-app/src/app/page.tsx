@@ -92,42 +92,75 @@ export default function Home() {
         Social Network .SP verfication portal
       </h1>
 
-      <div > {!isAuthenticated && <div>  login with Farcaster to link social media   </div>} </div>
-      <SignInButton></SignInButton>
+      <div > {!isAuthenticated &&
+        <div >
+          <p style={{ color: 'black', margin: "25px" }}> Login with Farcaster to link social media  </p>
+     <SignInButton />
+        </div>}
+      </div>
 
-      {isAuthenticated && <div>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 black"
-          placeholder="Enter something..."
-        />
-        <button
-          onClick={handleTextInput}
-          className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
-        >
-          Provide post Url / Auto detect - coming soon
-        </button>
 
-        <div className="flex items-center justify-center mb-6">
-          <span className="text-gray-500">or</span>
+
+      {isAuthenticated &&
+        <div>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 black"
+            placeholder="Enter something..."
+          />
+          <button
+            onClick={handleTextInput}
+            className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
+          >
+            Provide post Url / Auto detect - coming soon
+          </button>
+
+          <div className="flex items-center justify-center mb-6">
+            <span className="text-gray-500">or</span>
+          </div>
+
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+            className="mb-6"
+          />
+          <button
+            onClick={handleFileUpload}
+            className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
+          >
+            Get OTP from image
+          </button>
         </div>
+      }
 
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-          className="mb-6"
-        />
-        <button
-          onClick={handleFileUpload}
-          className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
-        >
-          Get OTP from image
-        </button>
-      </div>}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+
+
+
+
+
 
       {response && (
         <div className="mt-6">
