@@ -1,8 +1,9 @@
+
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 // require('dotenv').config()
 
-export async function createAttestation (pshandle: string, socialMedia: string, socialMediaHandle: string) {
+export async function createAttestation (pshandle: any  , socialMedia: string, socialMediaHandle: string) {
 
   const providerUrl = "https://rpc-social-network-sqbzjhcjed.t.conduit.xyz"; // Your network URL
   const privateKey = process.env.PRIVATE_KEY

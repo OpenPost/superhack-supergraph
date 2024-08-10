@@ -76,7 +76,7 @@ export async function requestVerification(
 }
 
 export async function completeVerification(
-    pshandle: string,
+    pshandle: string | undefined,
     socialMedia: string,
     otp: string,
     newSocialMediaHandle: string,

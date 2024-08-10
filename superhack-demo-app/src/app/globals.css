@@ -53,3 +53,7 @@ button:hover {
 div {
   color: inherit; /* Use inherited color for text */
 }
+
+.overFlowClass {
+  overflow-x: scroll;
+}

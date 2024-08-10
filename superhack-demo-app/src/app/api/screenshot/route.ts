@@ -2,6 +2,8 @@
 
 import OpenAI from 'openai';
 import { NextRequest, NextResponse } from 'next/server';
+import { createAttestation } from '../lib/createAss';
+import { completeVerification ,requestVerification} from '../lib/contractOperations';
 
 // Initialize OpenAI API client
 const openai = new OpenAI({
@@ -17,6 +19,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('image') as File | null;
+    const pshandle = formData.get('pshandle') as string; // Get the pshandle from form data
 
     if (!file) {
       return NextResponse.json({ success: false, error: 'No file uploaded' });
@@ -34,11 +37,13 @@ export async function POST(req: NextRequest) {
     - Social Media Account ID: Extract and provide the account ID if visible.
     - Username: Extract and provide the username associated with the account.
     - One-Time Password (OTP): Extract and provide any OTP mentioned in the text.
+    - Social Media Platform : the name of the social media platform mentioned in the message user posted.
     - Summary: Briefly describe any context or additional details that may be relevant.
 
     Return the response as a JSON object with the following structure:
     {
       "socialMediaAccountId": "Extracted account ID",
+      "socialMediaPlatform: "Extracted Social Media platform"
       "username": "Extracted username",
       "otp": "Extracted OTP",
       "summary": "Brief description of the context or additional details."
@@ -76,19 +81,30 @@ export async function POST(req: NextRequest) {
       const jsonString = chatGptResponse.slice(jsonStart, jsonEnd);
 
       parsedResponse = JSON.parse(jsonString);
+
+      console.log(parsedResponse);
+
+      // const reqVerfication = await requestVerification(pshandle, "farcaster", otp)
+
+      const ass = await createAttestation(pshandle, parsedResponse.socialMediaPlatform.toLowerCase(), parsedResponse.socialMediaAccountId)
+  
+      console.log("otp", parsedResponse.otp);
+  
+      const complete = await completeVerification(pshandle, parsedResponse.socialMediaPlatform.toLowerCase(), parsedResponse.otp , parsedResponse.socialMediaAccountId, ass)
+      console.log(complete);
+
     } catch (e) {
       console.error('Failed to parse JSON:', chatGptResponse);
       parsedResponse = {
         socialMediaAccountId: "Failed to parse response.",
         username: "",
         otp: "",
-        summary: ""
+        summary: "",
+        socialMediaPlatform: ""
       };
     }
 
-    console.log(parsedResponse);
-
-    return NextResponse.json(parsedResponse);
+    return NextResponse.json({parsedResponse});
   } catch (error: any) {
     console.error('Error processing request:', error);
     return NextResponse.json({ message: 'Something went wrong', error: error.message }, { status: 500 });

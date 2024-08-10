@@ -24,12 +24,21 @@ export async function POST(req: NextRequest) {
 
             const completed = await completeVerification(pshandle, 'farcaster', otp, pshandle, ass)
             console.log(completed);
-            return NextResponse.json({ success: true, message: "u were not registered, but you are! please generate a new OTP!" });
+            return NextResponse.json({ success: true, message: "u were not registered, but you are! please generate a new OTP!", otp: "n/a" });
         }
         else {
-            const reqVerfication = await requestVerification(pshandle, socialMedia, otp)
+            console.log("user exists! generating verfication request ");
+
+            const randomBytes = ethers.randomBytes(32);
+           
+            const newOtp = ethers.hexlify(randomBytes);
+            console.log("new OTP", newOtp);
+            
+            const reqVerfication = await requestVerification(pshandle, socialMedia, newOtp)
+            
             console.log(reqVerfication);
-            return NextResponse.json({ success: true, message: "Verfication requested ! please post the message in your social media" });
+
+            return NextResponse.json({ success: true, message: `Verification requested ! to link your ${socialMedia} account !  please post this message in your ${socialMedia} page , otp: ${newOtp}` });
         }
 
     } catch (error: any) {
