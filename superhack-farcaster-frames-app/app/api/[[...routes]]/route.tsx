@@ -3,32 +3,29 @@
 
 import { Button, Frog, TextInput } from "frog";
 import { devtools } from "frog/dev";
-// import { neynar } from 'frog/hubs'
-// import { handle } from "frog/next";
 import { serveStatic } from "frog/serve-static";
 import axios from "axios";
 import { handle } from "frog/vercel";
+import { runQuery } from "../lib/db";
 
 const app = new Frog({
   // assetsPath: "/",
   basePath: "/api",
-  // Supply a Hub to enable frame verification.
-  // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
   title: "Frog Frame",
 });
 
-const threads_access_token =
-  "THQWJYTGVpYVh1R1lhemdOWWFQdHdDVC1NX3hVQlk1dkt4Mi02aHRobUEzZAGhGVVdaUFNzSzNBa2Jva2pHMFM2Y1FaelVZAemFkZAG0wVTZAnTUs5b0tqUzkyZAGpMQjVEc3cxRW5VVVJ5U09BeEhnNGdreC1oU3puS1FXRjFQYlNNWHNiS3ZAMLXlvb2lEcUQtSHBTMFEZD";
-
-const POST1_URL =
-  "https://graph.threads.net/v1.0/me/threads?fields=id,media_product_type,media_type,media_url,permalink,owner,username,text,timestamp,shortcode,thumbnail_url,children,is_quote_post&access_token=THQWJYTGVpYVh1R1lhemdOWWFQdHdDVC1NX3hVQlk1dkt4Mi02aHRobUEzZAGhGVVdaUFNzSzNBa2Jva2pHMFM2Y1FaelVZAemFkZAG0wVTZAnTUs5b0tqUzkyZAGpMQjVEc3cxRW5VVVJ5U09BeEhnNGdreC1oU3puS1FXRjFQYlNNWHNiS3ZAMLXlvb2lEcUQtSHBTMFEZD";
-
 app.frame("/test", async (c) => {
-  console.log("Frame /post1 accessed");
   const { buttonValue, inputText, status } = c;
+
+  const [{ access_token: accessToken }] = await runQuery(
+    "select * from threads_url"
+  );
+  const POST1_URL = `https://graph.threads.net/v1.0/me/threads?fields=id,media_product_type,media_type,media_url,permalink,owner,username,text,timestamp,shortcode,thumbnail_url,children,is_quote_post&access_token=${accessToken}`;
+
   const response = await axios.get(POST1_URL);
   const threads = response.data.data;
-  console.log("console threads", threads);
+  console.log("console threads");
+  const threadPost = [threads[0]];
 
   return c.res({
     image: (
@@ -73,7 +70,7 @@ app.frame("/test", async (c) => {
             boxSizing: "border-box",
           }}
         >
-          {threads.map((thread) => (
+          {threadPost.map((thread) => (
             <li
               key={thread.id}
               style={{
