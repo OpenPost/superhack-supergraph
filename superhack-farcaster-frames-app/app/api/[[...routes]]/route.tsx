@@ -18,10 +18,10 @@ const app = new Frog({
 });
 
 const threads_access_token =
-  "THQWJXS2xMTmszNm9ySXVlY2RFMERKUGZAkSXIyLUw2NVVSbXg3bjlTLVlMcDBGUnRaQkcxOE1BWjlOMzd0TlBraWptUmhNUGtUWlBwMFFCT2d1dUd3bHJQWlZAWS2FZAX0U2NFAwWG82Y2xjQ1M1QmdFX2hmcE5CaksyTTZAQMWhpZAmxGVlM1eVUtR1lYZAk55NTNnOVFv";
+  "THQWJYTGVpYVh1R1lhemdOWWFQdHdDVC1NX3hVQlk1dkt4Mi02aHRobUEzZAGhGVVdaUFNzSzNBa2Jva2pHMFM2Y1FaelVZAemFkZAG0wVTZAnTUs5b0tqUzkyZAGpMQjVEc3cxRW5VVVJ5U09BeEhnNGdreC1oU3puS1FXRjFQYlNNWHNiS3ZAMLXlvb2lEcUQtSHBTMFEZD";
 
 const POST1_URL =
-  "https://graph.threads.net/v1.0/me/threads?fields=id,media_product_type,media_type,media_url,permalink,owner,username,text,timestamp,shortcode,thumbnail_url,children,is_quote_post&access_token=THQWJXS2xMTmszNm9ySXVlY2RFMERKUGZAkSXIyLUw2NVVSbXg3bjlTLVlMcDBGUnRaQkcxOE1BWjlOMzd0TlBraWptUmhNUGtUWlBwMFFCT2d1dUd3bHJQWlZAWS2FZAX0U2NFAwWG82Y2xjQ1M1QmdFX2hmcE5CaksyTTZAQMWhpZAmxGVlM1eVUtR1lYZAk55NTNnOVFv";
+  "https://graph.threads.net/v1.0/me/threads?fields=id,media_product_type,media_type,media_url,permalink,owner,username,text,timestamp,shortcode,thumbnail_url,children,is_quote_post&access_token=THQWJYTGVpYVh1R1lhemdOWWFQdHdDVC1NX3hVQlk1dkt4Mi02aHRobUEzZAGhGVVdaUFNzSzNBa2Jva2pHMFM2Y1FaelVZAemFkZAG0wVTZAnTUs5b0tqUzkyZAGpMQjVEc3cxRW5VVVJ5U09BeEhnNGdreC1oU3puS1FXRjFQYlNNWHNiS3ZAMLXlvb2lEcUQtSHBTMFEZD";
 
 app.frame("/test", async (c) => {
   console.log("Frame /post1 accessed");
