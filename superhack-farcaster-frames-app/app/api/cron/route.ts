@@ -41,15 +41,15 @@ async function getSignedSig() {
     },
     primaryType: "SignedKeyRequest",
     message: {
-      requestFid: BigInt(appFid),
+      requestFid: appFid,
       key,
-      deadline: BigInt(deadline),
+      deadline: deadline,
     },
   });
 
   const warpcastApi = "https://api.warpcast.com";
   const response = await axios.post(`${warpcastApi}/v2/signed-key-requests`, {
-    key: process.env.FARCASTER_PUB_KEY,
+    key,
     requestFid: appFid,
     signature,
     deadline,
@@ -87,6 +87,8 @@ export const GET = async (req: Request) => {
     // Get signed signature
     const signature = await getSignedSig();
 
+		const postResp = await axios.
+
     // .then((response) => response.data.result.signedKeyRequest);
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
@@ -98,3 +100,8 @@ export const GET = async (req: Request) => {
     );
   }
 };
+
+
+
+curl -X 'POST' "https://warpcast.com/~/compose?text=Helloworld!" \
+  -H'Authorization: Bearer wc_secret_4f30556e9cc7d4b7093e5666956c9729930c58e5d498ec366bf40f13_0c1c00e4' 

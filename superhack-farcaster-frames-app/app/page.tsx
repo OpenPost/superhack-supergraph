@@ -37,7 +37,7 @@ export default function Home() {
         <div>
           <QRCode
             value={
-              "farcaster://signed-key-request?token=0xf4f6a238d0c32d8892baab85dc97e8e822c538608d6126cf"
+              "farcaster://signed-key-request?token=0x47785d17f065ac5f1927301cb36c4b6ecd094b41c5388fcd"
             }
           />
           ;
