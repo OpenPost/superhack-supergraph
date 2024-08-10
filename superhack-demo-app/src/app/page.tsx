@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { SignInButton, useProfile } from '@farcaster/auth-kit';
 
 export default function Home() {
   const [input, setInput] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
+
   const [response, setResponse] = useState<{
     socialMediaAccountId: string;
     username: string;
@@ -12,6 +14,13 @@ export default function Home() {
     summary: string;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+
+  const {
+    isAuthenticated,
+    profile: { username, fid },
+  } = useProfile();
+
 
   const handleTextInput = async () => {
     setError(null);
@@ -75,40 +84,48 @@ export default function Home() {
     }
   };
 
+
   return (
+
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
       <h1 className="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">
-      Social Network .SP verfication portal
+        Social Network .SP verfication portal
       </h1>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 black"
-        placeholder="Enter something..."
-      />
-      <button
-        onClick={handleTextInput}
-        className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
-      >
-        Provide post Url / Auto detect - coming soon
-      </button>
 
-      <div className="flex items-center justify-center mb-6">
-        <span className="text-gray-500">or</span>
-      </div>
+      <div > {!isAuthenticated && <div>  login with Farcaster to link social media   </div>} </div>
+      <SignInButton></SignInButton>
 
-      <input
-        type="file"
-        onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-        className="mb-6"
-      />
-      <button
-        onClick={handleFileUpload}
-        className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
-      >
-       Get OTP from image
-      </button>
+      {isAuthenticated && <div>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 black"
+          placeholder="Enter something..."
+        />
+        <button
+          onClick={handleTextInput}
+          className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
+        >
+          Provide post Url / Auto detect - coming soon
+        </button>
+
+        <div className="flex items-center justify-center mb-6">
+          <span className="text-gray-500">or</span>
+        </div>
+
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+          className="mb-6"
+        />
+        <button
+          onClick={handleFileUpload}
+          className="w-full py-3 px-4 mb-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-teal-400 transition-all"
+        >
+          Get OTP from image
+        </button>
+      </div>}
 
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
 
@@ -131,7 +148,7 @@ export default function Home() {
           className="w-full py-3 px-4 bg-gray-300 text-gray-600 font-semibold rounded-lg cursor-not-allowed transition-all"
           disabled
         >
-         Add Attestion (Coming soon)
+          Add Attestion (Coming soon)
         </button>
       </div>
     </div>
