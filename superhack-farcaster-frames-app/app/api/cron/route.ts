@@ -4,8 +4,17 @@ import axios from "axios";
 import { runQuery } from "../lib/db";
 import * as ed from "@noble/ed25519";
 import { mnemonicToAccount, signTypedData } from "viem/accounts";
+import {
+  Message,
+  NobleEd25519Signer,
+  FarcasterNetwork,
+  makeCastAdd,
+} from "@farcaster/core";
+import { hexToBytes } from "@noble/hashes/utils";
 
 // Example URL and data to be used for route creation
+
+let signer;
 
 async function getSignedSig() {
   const SIGNED_KEY_REQUEST_VALIDATOR_EIP_712_DOMAIN = {
@@ -25,9 +34,16 @@ async function getSignedSig() {
   const privateKey = ed.utils.randomPrivateKey();
   console.log("console priv", privateKey);
   const publicKeyBytes = await ed.getPublicKeyAsync(privateKey);
-  console.log("console priv", publicKeyBytes);
+  // signer = publicKeyBytes;
+  console.log("console pub", publicKeyBytes);
 
   const key = "0x" + Buffer.from(publicKeyBytes).toString("hex");
+  signer = privateKey;
+
+  console.log("note this down", {
+    publicKey: "0x" + Buffer.from(publicKeyBytes).toString("hex"),
+    privateKey: "0x" + Buffer.from(privateKey).toString("hex"),
+  });
 
   /*** Generating a Signed Key Request signature ***/
   const appFid = process.env.APP_FID;
@@ -67,6 +83,60 @@ async function getSignedSig() {
   );
 }
 
+async function sendCast(message: string, parentUrl: string) {
+  try {
+    const dataOptions = {
+      fid: 751009,
+      network: FarcasterNetwork.MAINNET,
+    };
+    // const SIGNER = process.env.PRIVATE_KEY || "";
+    const privateKeyBytes = new Uint8Array([
+      156, 159, 88, 63, 132, 237, 27, 200, 141, 238, 146, 241, 29, 223, 96, 18,
+      173, 118, 13, 56, 158, 3, 91, 176, 43, 28, 124, 174, 72, 139, 100, 5,
+    ]);
+    const ed25519Signer = new NobleEd25519Signer(privateKeyBytes);
+    console.log("ed25519Signer", ed25519Signer);
+    const castBody = {
+      text: message,
+      embeds: [{ url: "https://openpost-sourcing.vercel.app/api/random" }],
+      embedsDeprecated: [],
+      mentions: [],
+      mentionsPositions: [],
+      parentUrl: parentUrl,
+    };
+
+    console.log(
+      "castBody, dataOptions, ed25519Signer",
+      castBody,
+      dataOptions,
+      ed25519Signer
+    );
+    const castAddReq = await makeCastAdd(castBody, dataOptions, ed25519Signer);
+    console.log("castAddReq", castAddReq);
+    const castAdd: any = castAddReq._unsafeUnwrap();
+
+    console.log("console castAdd", castAdd);
+    const messageBytes = Buffer.from(Message.encode(castAdd).finish());
+
+    console.log("console messageBytes", messageBytes);
+
+    const castRequest = await fetch(
+      "https://hub.pinata.cloud/v1/submitMessage",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/octet-stream" },
+        body: messageBytes,
+      }
+    );
+
+    const castResult = await castRequest.json();
+    console.log("castResult", castResult);
+    return castResult;
+  } catch (error) {
+    console.log("problem sending cast:", error);
+  }
+}
+
 export const GET = async (req: Request) => {
   try {
     // Call threads api
@@ -77,17 +147,20 @@ export const GET = async (req: Request) => {
     const response = await axios.get(POST1_URL);
     const currentPostCounts = response.data.data.length;
 
-    // if (oldPostCounts === currentPostCounts) {
-    //   return new Response(JSON.stringify({ success: true }), { status: 200 });
-    // }
+    if (oldPostCounts === currentPostCounts) {
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    }
 
     // Get Latest Post
     const latestPost = response.data.data;
 
     // Get signed signature
-    const signature = await getSignedSig();
+    // const signature = await getSignedSig();
 
-		const postResp = await axios.
+    await sendCast(
+      "Check out my new post on Threads. Auto posted here using #OpenPost",
+      "https://warpcast.com/"
+    );
 
     // .then((response) => response.data.result.signedKeyRequest);
 
@@ -100,8 +173,3 @@ export const GET = async (req: Request) => {
     );
   }
 };
-
-
-
-curl -X 'POST' "https://warpcast.com/~/compose?text=Helloworld!" \
-  -H'Authorization: Bearer wc_secret_4f30556e9cc7d4b7093e5666956c9729930c58e5d498ec366bf40f13_0c1c00e4' 

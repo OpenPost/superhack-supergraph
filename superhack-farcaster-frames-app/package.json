@@ -10,6 +10,7 @@
     "build": "next build"
   },
   "dependencies": {
+    "@farcaster/core": "^0.14.20",
     "@noble/ed25519": "^2.1.0",
     "axios": "^1.7.3",
     "crypto-js": "^4.2.0",
