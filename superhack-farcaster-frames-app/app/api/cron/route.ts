@@ -140,6 +140,7 @@ async function sendCast(message: string, parentUrl: string) {
 
 export const GET = async (req: Request) => {
   try {
+    console.log("Running cron job");
     // Call threads api
     const [{ access_token: accessToken, post_count: oldPostCounts }] =
       await runQuery("select * from threads_url");
@@ -165,6 +166,7 @@ export const GET = async (req: Request) => {
     await runQuery(
       `Update  threads_url SET post_count=${oldPostCounts + 1} where id=1`
     );
+    console.log("Cron job executed!");
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
