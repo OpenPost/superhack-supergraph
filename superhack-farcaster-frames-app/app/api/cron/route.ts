@@ -98,7 +98,7 @@ async function sendCast(message: string, parentUrl: string) {
     console.log("ed25519Signer", ed25519Signer);
     const castBody = {
       text: message,
-      embeds: [{ url: "https://openpost-sourcing.vercel.app/api/random" }],
+      embeds: [{ url: "https://openpost-sourcing.vercel.app/api/autopost" }],
       embedsDeprecated: [],
       mentions: [],
       mentionsPositions: [],
@@ -131,6 +131,7 @@ async function sendCast(message: string, parentUrl: string) {
 
     const castResult = await castRequest.json();
     console.log("castResult", castResult);
+
     return castResult;
   } catch (error) {
     console.log("problem sending cast:", error);
@@ -154,15 +155,16 @@ export const GET = async (req: Request) => {
     // Get Latest Post
     const latestPost = response.data.data;
 
-    // Get signed signature
-    // const signature = await getSignedSig();
-
     await sendCast(
       "Check out my new post on Threads. Auto posted here using #OpenPost",
       "https://warpcast.com/"
     );
 
-    // .then((response) => response.data.result.signedKeyRequest);
+    console.log("updating post count");
+
+    await runQuery(
+      `Update  threads_url SET post_count=${oldPostCounts + 1} where id=1`
+    );
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
